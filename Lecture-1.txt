@@ -1,0 +1,109 @@
+###Lecture 1
+
+Office hours 4:30 - 5:30 Thursday in 413 Soda Hall  
+Ian wants to fuck her **hard**
+
+---
+
+####What is Networking about?
+- **End-system**: A device that uses the internet to communicate
+	- E.g. linux server, windows PC, MAC laptop, iPad, smartphone, car navigator, heart pacemaker
+- **Switch**: Helps the end-system communicate
+- **Link**: Connects end-systems to switches and switches to other switches
+- **Internet Service Provider (ISP)**:
+	- E.g. Cable company, phone company, university net
+- **Packet**: A set of formatted bits
+- **Path**: The sequence of links and switches through which packets travel from their origin to their destination
+- **Protocol**: A set of rules on how to communicate
+
+---
+
+####A few defining characteristics of the Internet
+<br>
+#####A federated system
+- The Internet interconnects different networks (> 18,000 ISPs)
+- One common protocol -- the "Internet Protocol (IP)" - between users and the network and between networks
+- Interoperability is the Internet's most important goal
+- Leads to a constant tussle between business and technical factors
+	- competing ISPs must cooperate to serve their customers
+	- practical realities of incentives, economics and real-world trust determine physical topology and path selection
+	- a common protocol is great for interoperability ... but complicates innovation
+
+#####Tremendous scale
+<br>
+#####Enormous diversity and dynamic range
+- Communication latency: microsends to seconds (10^6)
+- Bandwidth: 1KBits / second to 100 Gigabits/second (10^7)
+- Packet loss: 0-90%
+- Technology: optical, wireless, satellite, copper
+- Endpoint devices, sensors, cell phones, datacenters
+- Applications: Skype, live video, gaming, remote medicine
+- Users: the governing, governed, operators, selfish, **malicious**, naive, savvy, embarrassed, paranoid, ...
+
+#####Constant Evolution
+<br>
+#####Asynchronous Operation
+- Fundamental constraint: speed of light
+
+#####Prone to Failure
+- To send a message, all components along a path must function correctly
+	- Software, modem, wireless access point, firewall, links, network interface cards, switches, ...
+	- Including **human operators**
+
+#####An Engineered System
+- Constrained by limits of available technology
+	- Link bandwidths
+	- Switch port counts
+	- Bit error rates
+	- Cost
+
+---
+
+####What do we know?
+- The early Internet pioneers came up with a solution that was successful beyond all imagining
+- Several enduring **architectural principles and practices** emerged from their work
+- But it is just one design
+- And numerous cracks have emerged over time
+	- want to diagnose problems but federation hides inner workings
+	- want to block unwanted traffic but the network doesn't authenticate
+	- cant optimize for different applications or customers
+	- upgrading protocols is deeply painful
+	- As have new requirements
+		- COMPLETE
+
+####Architectural principles
+- Decentralization [lectures: all]
+- Packets [lecture 2]
+- Statistical multiplexing [lecture 2]
+- Best effort service [lecture 3]
+- The "end to end" design principle [lectures 8+]
+- "Layered" decomposition [lectures: all]
+- IP as "narrow waist" interface [lecture 8]
+
+---
+
+####Summary
+- The Internet offers us a lesson on how to reason through the design of a complex system
+	- What are our goals and constraints?
+	- What's the right prioritization of goals?
+	- How do we decompose a problem?
+	- Who does what? How?
+	- What are the tradeoffs between design options?
+- In short: a lesson in how to **architect** a system
+
+####Network Architecture
+- More about thinking rigorously than doing rigorous math
+- More about understanding tradeoffs than running benchmarks
+- More about practicality than optimality
+- **Done right, can be a powerful thing**
+
+####What CS168 will teach me
+- **How** the Internet works
+- **Why** it works the way it does
+- How to **reason** through a complicated (networking) design problem
+
+###Workload
+- Three projects
+- Three homeworks
+- One midterm
+- Final

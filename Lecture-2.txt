@@ -1,0 +1,127 @@
+##Lecture 2
+
+- What is a network made of?
+- How is it shared?
+- How do we evaluate a network?
+
+---
+
+####Phone company
+	Home PC --> [ DSL modem ] --> Phoneline --> [ Central Office: DSLAM --> Switch] --> ...
+					|-> telephone									|-> telephone network
+					
+					
+#####Digital Subscriber Line (DSL)
+- Twisted pair copper
+- 3 separate channels
+	- downstream data channel
+	- upstream data channel
+	- 2-way phone channel
+- up to 25 Mbps downstream
+- up to 2.5 Mbps upstream
+
+#####Why phone lines?
+- They are everywhere
+
+####Cable company
+	Home PC --> [ cable modem ] --> copper ---> O --> fiber --> [ Cable head end: CMTS --> Switch] --> ...
+	
+#####Cable
+- Coaxial copper & fiber
+- up to 42.8 Mbps downstream
+- up to 30.7 Mbps upstream
+- Shared network
+
+####University net
+	Workstation --> Ethernet cable ---> "local" switch --> aggregate switch" --> ...
+	
+---
+
+###How is it shared?
+
+- How do we scale a network to many end-systems?
+- Switched networks enable efficient scaling!
+- Two approaches to sharing
+	- Reservation
+	- On-demand
+- Switching on-demand exploits **statistical multiplexing** better than reservations
+	- Sharing using the statistics of demand
+	- Good for bursty traffic (average << peak demand)
+	- Similar to insurance, with the same failure mode
+
+####Statistical multiplexing is a recurrent theme in computer science
+- Phone network rather than dedicated lines
+	- ancient history
+- Packet switching rather than circuits
+	- today's lecture
+- Cloud computing
+	- shared vs. dedicated machines
+
+####Two approaches to sharing
+
+#####Packet Switching
+- Packets treated on demand
+- Admission control: **per packet**
+
+#####Circuit Switching
+- Resources reserved per active "connection"
+- Admission control: **per connection**
+
+#####A hybrid: virtual circuits
+- Emulating "circuit" switching with packets... check textbook!
+
+---
+
+####Circuit Switching
+	Reservation establishes a "circuit" within a switch
+1. **src** sends a reservation request to **dst**
+2. Switches "establish a circuit"
+3. **src** starts sending data
+4. **src** sends a teardown circuit message
+
+#####Many kinds of "circuits"
+- Time division multiplexing (**TDM**)
+	- Divide time in **time slots**
+	- Separate time slots per circuit
+- Frequency division multiplexing (**FDM**)
+	- Divide frequency spectrum in **frequency bands**
+	- Separate frequency band per circuit
+
+#####Timing in Circuit Switching
+1. Circuit establishment
+2. Data transfer
+3. Circuit teardown
+
+#####Inefficiencies in Circuit Switching
+- Case 1: Multiple data transfers with standby periods in-between with no data transmission
+	- Unused circuit
+- Case 2: Really small data transfer
+	- Circuit establishment and teardown takes more time than data transfer, too much work for such a little transmission
+- Circuit switching doesn't "route around trouble" if a switch fails
+
+#####Evaluation of Circuit Switching
+- Pros
+	- Predictable performance
+	- Simple/fast switching (once circuit established)
+- Cons
+	- Complexity of circuits setup/teardown
+	- Inefficient when traffic is bursty
+	- Circuit setup adds delay
+	- Switch fails -> its circuit(s) fails
+
+####Packet Switching
+- Each packet contains destination (**dst**)
+- Each packet treated independently
+- With buffers to absorb transient overloads
+
+#####Evaluation of Packet Switching
+- Pros
+	- Efficient use of network resources
+	- Simpler to implement
+	- Robust: can "route around trouble"
+- Cons
+	- Unpredictable performance
+	- Requires buffer management and congestion control
+
+
+	

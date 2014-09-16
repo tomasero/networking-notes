@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="format" content="complete">
+</head>
+<body>
+
+<h3>Lecture 3</h3>
+
+<pre><code>- How do we evaluate a network?
+- How is communication organized?
+</code></pre>
+
+<hr>
+
+<h4>Circuits vs Packets</h4>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Circuits</th>
+	<th style="text-align:left;">Packets</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">predictable performance</td>
+	<td style="text-align:left;">unpredictable performance</td>
+</tr>
+<tr>
+	<td style="text-align:left;">inefficient use of network resources</td>
+	<td style="text-align:left;">efficient use of network resources</td>
+</tr>
+<tr>
+	<td style="text-align:left;">complex (state int he network)</td>
+	<td style="text-align:left;">simple (no state in the network)</td>
+</tr>
+</tbody>
+</table>
+
+<h4>How do we evaluate a network?</h4>
+
+<ul>
+<li>Delay</li>
+<li>Loss</li>
+<li>Throughput</li>
+</ul>
+
+<h4>Delay</h4>
+
+<ul>
+<li>How long does it take tos end a packet from its source to destination?</li>
+<li>Consists of four components
+
+<ul>
+<li>Transmission delay
+
+<ul>
+<li>Due to link properties</li>
+</ul></li>
+<li>Propagation delay
+
+<ul>
+<li>Due to link properties</li>
+</ul></li>
+<li>Queuing delay
+
+<ul>
+<li>Due to traffic mix and switch internals</li>
+</ul></li>
+<li>Processing delay
+
+<ul>
+<li>Due to traffic mix and switch internals</li>
+</ul></li>
+</ul></li>
+</ul>
+
+<h5>A network link</h5>
+
+<ul>
+<li>Link bandwidth
+
+<ul>
+<li>Number of bits sent / received per unit time (bits / sec or bps)</li>
+</ul></li>
+<li>Propagation delay
+
+<ul>
+<li>Time for one bit to move through the link (seconds)</li>
+</ul></li>
+<li>Bandwidth-Delay Product (BDP)
+
+<ul>
+<li>Number of bits &#8220;in flight&#8221; at any time</li>
+<li>BDP = bandwidth x propagation delay</li>
+</ul></li>
+</ul>
+
+<h5>Example</h5>
+
+<ul>
+<li>Same city over a slow link
+
+<ul>
+<li>bandwidth: ~100 Mbps</li>
+<li>propagation delay: ~0.1 msec</li>
+<li>BDP: 10,000 bits (1.25KBytes)</li>
+</ul></li>
+<li>Corss-country over fast link
+
+<ul>
+<li>bandwidth: ~10Gbps</li>
+<li>propagation delay: ~10 msec</li>
+<li>BDP: 10<sup>8</sup> bits (12.5 MBytes)</li>
+</ul></li>
+</ul>
+
+<h5>Transmission delay</h5>
+
+<ul>
+<li>Time taken to push all the bits of a packet into the link</li>
+<li>Packet size / link bandwidth</li>
+</ul>
+
+<h5>Propagation delay</h5>
+
+<ul>
+<li>Time taken to move one bit from one end of a link to the other</li>
+<li>Link length / link propagation delay</li>
+</ul>
+
+<hr>
+
+<h5>Queuing delay</h5>
+
+<ul>
+<li>Time a packet sits in a buffer before it is processed</li>
+<li>If arrival rate &gt; departure rate (<strong>persistent overload</strong>)
+
+<ul>
+<li>approaches infinity (assuming an infinite buffer)</li>
+<li>in practice, finite buffer &#8211;&gt; loss</li>
+</ul></li>
+<li>If arrival rate &lt; departure rate
+
+<ul>
+<li>depends on burst size</li>
+</ul></li>
+</ul>
+
+<h5>Basic Queuing Theory Terminology</h5>
+
+<ul>
+<li>Arrival process: how packets arrive
+
+<ul>
+<li>Average rate A</li>
+</ul></li>
+<li>W: average time packets wait in the queue
+
+<ul>
+<li>W for &#8220;waiting time&#8221;</li>
+</ul></li>
+<li>L: average number of packets waiting int he queue
+
+<ul>
+<li>L for &#8220;length of queue&#8221;</li>
+</ul></li>
+</ul>
+
+<h5>Little&#8217;s Law 1961</h5>
+
+<pre><code>L = A x W
+</code></pre>
+
+<ul>
+<li>Compute L: count packets in queue every second
+
+<ul>
+<li>How often does a single packet gets counted? W times</li>
+</ul></li>
+<li>Why do you care?
+
+<ul>
+<li>Easy to compute L, harder to compute W</li>
+</ul></li>
+</ul>
+
+<hr>
+
+<h5>Processing Delay</h5>
+
+<ul>
+<li>Time taken for the switch to process a packet
+
+<ul>
+<li>Typically assume this is negligible</li>
+</ul></li>
+</ul>
+
+<hr>
+
+<h4>Loss</h4>
+
+<ul>
+<li>What fraction of the packets sent to a destination are dropped?</li>
+</ul>
+
+<h4>Throughput</h4>
+
+<ul>
+<li>At what rate is the destination receiving data from the source?
+
+<ul>
+<li>Data size / transfer time</li>
+</ul></li>
+<li>Transfer time = F / R + propagation delay
+
+<ul>
+<li>F = file of size (bits)</li>
+<li>R = average throughput</li>
+</ul></li>
+</ul>
+
+<hr>
+
+<pre><code>Where's my delay coming from?
+</code></pre>
+
+<hr>
+
+<h4>How is communication organized?</h4>
+
+<ul>
+<li><strong>Decompose</strong> the problem into tasks</li>
+<li><strong>Organize</strong> these tasks</li>
+<li><strong>Assign</strong> tasks to entities (who does that)</li>
+</ul>
+
+<h5>The path of the letter</h5>
+
+<pre><code>Semantic content -&gt; Identity -&gt; Location
+</code></pre>
+
+<h4>In the Internet: decomposition</h4>
+
+<ol>
+<li><strong>Applications</strong> [L7]</li>
+<li><strong>Transport</strong>: Reliable (or unreliable) transport) [L4]</li>
+<li><strong>Network</strong>: Best-effort global packet delivery [L3]</li>
+<li><strong>Data link</strong>: Best-effort local packet delivery [L2]</li>
+<li><strong>Physical</strong>: Physical transfer of bits [L1]</li>
+</ol>
+
+<h5>Layers</h5>
+
+<pre><code>A part of a system with well-defined interfaces to other parts
+</code></pre>
+
+<ul>
+<li>One layer interacts only with layer above and layer below</li>
+<li>Two layers interact only through the interface between them</li>
+</ul>
+
+<h5>Protocols and Layers</h5>
+
+<ul>
+<li>Communication between peer layers on different systems is defined by <strong>protocols</strong></li>
+</ul>
+
+<h5>Protocols</h5>
+
+<pre><code>An agreement between parties on how to communicate
+</code></pre>
+
+<ul>
+<li>Defines the syntax for communication
+
+<ul>
+<li><strong>Header</strong>: instructions for how to process the payload</li>
+<li>Each protocol defined the format of its packet headers
+
+<ul>
+<li>e.g. the first 32 bits carry the destination address</li>
+</ul></li>
+<li>And semantics
+
+<ul>
+<li>First a hello, then a request&#8230;</li>
+</ul></li>
+<li>Protocols exits at many levels, hardware and software
+
+<ul>
+<li>Defined by variety of standard bodies (IETF, IEEE, ITU)</li>
+</ul></li>
+</ul></li>
+</ul>
+
+<h5>Protocols at different layers</h5>
+
+<p><img src="./img/Layers.png" width="80%"></img></p>
+
+</body>
+</html>

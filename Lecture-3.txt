@@ -1,0 +1,146 @@
+###Lecture 3
+
+	- How do we evaluate a network?
+	- How is communication organized?
+
+---
+
+####Circuits vs Packets
+Circuits | Packets
+--- | ---
+predictable performance | unpredictable performance
+inefficient use of network resources | efficient use of network resources
+complex (state int he network) | simple (no state in the network)
+
+####How do we evaluate a network?
+- Delay
+- Loss
+- Throughput
+
+####Delay
+- How long does it take tos end a packet from its source to destination?
+- Consists of four components
+	- Transmission delay
+		- Due to link properties
+	- Propagation delay
+		- Due to link properties
+	- Queuing delay
+		- Due to traffic mix and switch internals
+	- Processing delay
+		- Due to traffic mix and switch internals
+
+#####A network link
+- Link bandwidth
+	- Number of bits sent / received per unit time (bits / sec or bps)
+- Propagation delay
+	- Time for one bit to move through the link (seconds)
+- Bandwidth-Delay Product (BDP)
+	- Number of bits "in flight" at any time
+	- BDP = bandwidth x propagation delay
+
+#####Example
+- Same city over a slow link
+	- bandwidth: ~100 Mbps
+	- propagation delay: ~0.1 msec
+	- BDP: 10,000 bits (1.25KBytes)
+- Corss-country over fast link
+	- bandwidth: ~10Gbps
+	- propagation delay: ~10 msec
+	- BDP: 10^8 bits (12.5 MBytes)
+
+#####Transmission delay
+- Time taken to push all the bits of a packet into the link
+- Packet size / link bandwidth
+
+#####Propagation delay
+- Time taken to move one bit from one end of a link to the other
+- Link length / link propagation delay
+
+---
+
+#####Queuing delay
+- Time a packet sits in a buffer before it is processed
+- If arrival rate > departure rate (**persistent overload**)
+	- approaches infinity (assuming an infinite buffer)
+	- in practice, finite buffer --> loss
+- If arrival rate < departure rate
+	- depends on burst size
+
+#####Basic Queuing Theory Terminology
+- Arrival process: how packets arrive
+	- Average rate A
+- W: average time packets wait in the queue
+	- W for "waiting time"
+- L: average number of packets waiting int he queue
+	- L for "length of queue"
+
+#####Little's Law 1961
+	L = A x W
+- Compute L: count packets in queue every second
+	- How often does a single packet gets counted? W times
+- Why do you care?
+	- Easy to compute L, harder to compute W
+
+---
+
+#####Processing Delay
+- Time taken for the switch to process a packet
+	- Typically assume this is negligible
+
+---
+
+####Loss
+- What fraction of the packets sent to a destination are dropped?
+
+####Throughput
+- At what rate is the destination receiving data from the source?
+	- Data size / transfer time
+- Transfer time = F / R + propagation delay
+	- F = file of size (bits)
+	- R = average throughput
+
+---
+
+	Where's my delay coming from?
+	
+---
+
+####How is communication organized?
+- **Decompose** the problem into tasks
+- **Organize** these tasks
+- **Assign** tasks to entities (who does that)
+
+#####The path of the letter
+	Semantic content -> Identity -> Location
+
+####In the Internet: decomposition
+1. **Applications** [L7]
+2. **Transport**: Reliable (or unreliable) transport) [L4]
+3. **Network**: Best-effort global packet delivery [L3]
+4. **Data link**: Best-effort local packet delivery [L2]
+5. **Physical**: Physical transfer of bits [L1]
+
+#####Layers
+	A part of a system with well-defined interfaces to other parts
+- One layer interacts only with layer above and layer below
+- Two layers interact only through the interface between them
+
+#####Protocols and Layers
+- Communication between peer layers on different systems is defined by **protocols**
+
+#####Protocols
+	An agreement between parties on how to communicate
+- Defines the syntax for communication
+	- **Header**: instructions for how to process the payload
+	- Each protocol defined the format of its packet headers
+		- e.g. the first 32 bits carry the destination address
+	- And semantics
+		- First a hello, then a request...
+	- Protocols exits at many levels, hardware and software
+		- Defined by variety of standard bodies (IETF, IEEE, ITU)
+
+#####Protocols at different layers
+<img src="./img/Layers.png" width="80%"/>
+
+
+
