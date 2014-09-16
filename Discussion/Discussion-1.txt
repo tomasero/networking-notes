@@ -1,0 +1,52 @@
+###Discussion 1
+
+- CS168 Discussion Section
+- TA: Chang Lan
+- Office Hour: 
+	- 3-4pm Monday
+	- 283H Soda
+
+---
+
+####Nodal Delay
+Processing + Queuing 
+
+#####Processing Delay
+- Processing on reception
+- Examine header and determine where to send
+- Error checking (maybe)
+#####Queuing Delay
+- Time packet spends in buffer/queue
+- Only when arrival rate > service rate
+- Especially significant when packet arrivals are bursty
+#####Transmission Delay
+- Time taken to push data onto link
+- Measured
+	- from when first bit of data pushed onto link
+	- until last bit of data is pushed onto the link
+- Limited by the link **bandwidth**
+#####Propagation Delay
+- Time taken by data to transverse link
+- Limited by the speed of light
+
+
+####Beyond Nodal Delays
+- End-to-End Delay
+	- Just the sum of the nodal delays along a path
+- Round Trip Time (RTT)
+	- 2x: cue send & response
+
+####Virtual Circuits
+- Covered more in section 4.2 of text
+- Circuit Establishment
+	- Source sends a setup packet to switches along path/circuit toward destination
+	- Switches along path set up cennection
+	- At end of path, desitnation sends confirmation back
+- Transfer
+	- Data send along path/circuit
+	- Note: Data sent along established circuit is cut-through!
+		- cut-through: the switch starts forwarding a packet before the whole packet has been received
+	- Question: What is the transmission rate of the circuit?
+- Circuit Teardown
+	- Source sends teardown packet along path
+	- Destination sends confirmation back
