@@ -1,0 +1,14 @@
+###Discussion 2
+####Routing
+	- Link-State
+	- Distance-Vector
+
+---
+
+####Link-State Routing
+Every node has **global knowledge** of the entire topology and does **local route computation** using **Djikstra's Algorithm**.
+
+####Distance-Vector Routing
+Every node has **local knowledge** about its neighbors and does **global route computation** using **Bellman-Ford's Algorithm**.
+- Poison Reverse
+	- Deliberately send poison information to avoid the loop
