@@ -1,0 +1,181 @@
+###Lecture 7
+#####BGP
+
+---
+
+####Interdomain Routing: Setup
+- Destinations are IP prefixes (12.0.0.0/8)
+- Nodes are Autonomous Systems (ASes)
+	- Internals of each AS are hidden
+- Links represent both physical links and business relationships
+- BGP (Border Gateway Protocol) is the Interdomain routing protocol
+	- Implemented by AS border routers
+
+####BGP: Basic Idea
+- An AS advertises its best routes to one or more IP prefixes
+- Each AS selects the "best" route it hears advertises for a prefix
+- Loop
+
+####BGP inspired by Distance Vector
+- Per-destination route advertisements
+- No global sharing of network topology information
+- Iterative and distributed convergence on paths
+- **With four crucial differences!**
+
+####Differences between BGP and DV
+
+#####1) Not picking shortest path routes
+- BGP selects the best route based on policy, not shortest distance (least cost)
+
+#####2) Path vector routing
+- Key idea: advertise the entire path
+	- Distance vector: send **distance metric** per destination
+	- Path vector: send the **entire path** for each destination
+- Benefits
+	- Loop avoidance is easy
+
+#####3) Selective route advertisement
+- For policy reasons, an AS may choose not to advertise a route to a destination
+- Hence, reachability is not guaranteed even if graph is connected
+
+#####4) BGP may aggregate routes
+- For scalability, BGP may aggregate routes for different prefixes
+
+---
+
+####Policy policy
+#####Policy imposed in how routes are selected and exported
+- **Selection**: Which path to use?
+	- Controls whether/how traffic leaves the network
+- **Export**: Which path to advertise?
+	- Controls whether/how traffic enters the network
+
+#####Typical Selection Policy
+- In decreasing order of priority
+	- make/save money (send to customer > peer > provider)
+	- maximize performance (smallest AS path length)
+	- minimize use of my network bandwidth ("hot potato")
+	- ...
+
+#####Typical Export Policy
+
+Destination prefix advertised by | Export route to
+--- | ---
+Customer | Everyone (providers, peers, other customers)
+Peer | Customers
+Provider | Customers
+
+	We'll refer to these as the "Gao-Rexford" rules (capture common -- but not required! -- practice!)
+	
+#####Gao-Rexford
+- With Gao-Rexford, the AS policy graph is a DAG (directed acyclic graph) and routes are "valley free"
+
+---
+
+####BGP protocol details
+
+#####Who speaks BGP?
+	- Border routers at an Autonomous System
+
+#####What does "speak BGP" mean?
+- Implement the BGP protocol standard
+- Specifies what messages to exchange with other BGP "speakers"
+	- message types (e.g., route advertisements, updates)
+	- message syntax
+- And how to process these messages
+	- e.g., "when you receive a BGP update, do..."
+	- follows BGP state machine in the protocol spec + policy decisions, etc.
+
+#####BGP "sessions"
+- A border router speaks BGP with border routers in other ASes
+- A border router speaks BGP with other (interior and border) routers in its own AS
+
+#####Types of BGP
+- **eBGP**: BGP sessions between border routers in **different** ASes
+	- Learn routes to external destinations
+- **iBGP**: BGP sessions between border routers and other routers within the **same** AS
+	- Distributed externally learned routes internally
+- **IGP**: "Interior Gateway Protocol" = Intradomain routing protocol
+	- provide internal reachability
+	- e.g., OSPF, RIP
+
+#####Some border routers don't need BGP
+- Customer that connects to a single upstream ISP
+	- The ISP can advertise prefixes into BGP on behalf of customer
+	- ... and the customer can simply default-route to the ISP
+
+#####Putting the pieces together
+1. Provide internal reachability (IGP)
+2. Learn routes to external destinations (eBGP)
+3. Distribute externally learned routes internally (iBGP)
+4. Travel shortest path to egress (IGP)
+
+#####Basic Messages in BGP
+- Open
+	- Establishes BGP session
+	- BGP uses TCP
+- Notification
+	- Report unusual conditions
+- Update
+	- Inform neighbor of new routes
+	- Inform neighbor of old routes that become inactive
+- Keepalive
+	- Inform neighbor that connection is still viable
+
+####Route Updates
+- Format <IP prefix: route attributes>
+	- attributes describe properties of the route
+- Two kinds of updates
+	- **announcements**: new routes or changes to existing routes
+	- **withdrawal**: remove routes that no longer exist
+
+####Route Attributes
+- Routes are described using attributes
+	- Used in route selection/export decisions
+- Some attributes are local
+	- i.e., private within an AS, not included in announcements
+- Some attributes are propagated with eBGP route announcements
+- There are many standardized attributes in BGP
+
+#####Attributes
+- ASPATH
+	- Carried in route announcements
+	- Vector that lists all the ASes a route advertisement (in reverse order)
+- LOCAL PREF
+	- "Local Preference"
+	- Used to choose between different AS paths
+	- The higher the value the more preferred
+	- Local to an AS; carried only in iBGP messages
+- MED
+	- "Multi-Exit Discriminator"
+	- Used when ASes are interconnected via 2 or more links to specify how close a prefix is to the link it is announced on
+	- Lower is better
+	- AS announcing prefix sets MED
+	- AS receiving prefix (optionally!) uses MED to select link
+- IGP cost
+	- Used for hot-potato routing
+		- Each router selects the closest egress point based on the path cost in intra-domain protocol
+
+#####BGP UPDATE Processing
+1. Apply Import Policies
+2. Best Route Selection
+3. Best Route Table -> IP Forwarding Table (Data plane)
+4. Apply Export Policies
+
+---
+
+####BGP Issues
+- Reachability
+	- In normal routing, if graph is connected then reachability is assured
+	- With policy routing, this does not always hold
+- Security
+	- An AS can claim to serve a prefix that they don't have a route to (blackholing traffic)
+		- Problem not specific to policy or path vector
+		- Important because of AS autonomy
+		- Fixable: make ASes "prove" they have a path
+	- Note: AS may forward packets along a route different from what is advertised
+		- Tell customers about fictitious short path...
+		- Much harder to fix!
+- Convergence
+	- Result: If all AS policies follow "Gao-Rexford" rules, BGP is guaranteed to converge (safety)
+	- For arbitrary policies, BGP may fail to converge!
