@@ -1,0 +1,120 @@
+###Lecture 9
+
+####Context
+- Control plane
+	- How to route traffic to each possible destination
+	- Jointly computed using BGP
+- Data plane
+	- Necessary fields in IP header of each packet
+
+####IP Routers
+- Core building clock of the Internet infrastructure
+
+####Router
+- N = number of external router "ports"
+- R = speed ("line rate") of a port
+- Router capacity = N x R
+
+---
+
+####Input Linecards
+- Tasks
+	- Receive incoming packets (physical layer stuff)
+	- Update the IP
+		- TTL
+		- Checksum
+		- Options (maybe)
+		- Fragment (maybe)
+	- Lookup the output port for the destination IP address
+	- Queue the packet at the switch fabric
+- Challenge: speed!
+	- 100B packets @ 40Gbps -> new packet every 20 nano seconds!
+- Typically implemented with specialized hardware
+	- ASICs, specialized "network processors"
+	- "exception" processing often done at control processor
+
+####Looking up the output port
+- One entry for each address -> 4 billion entries!
+- For scalability, addresses are **aggregated**
+
+####Longest Prefix Match Lookup
+- Packet with destination address 12.82.100.101 is sent to interface 2, as 12.82.100.xxx is the longest prefix matching packet's destination address
+
+#####LPM in real routers
+- Real routers use far more advanced/complex solutions than the approaches I just described
+	- but what we discussed is their starting point
+- With many heuristics and optimizations that leverage real-world patterns
+	- Some destinations more popular than others
+	- Some ports lead to more destinations
+	- Typical granularities
+
+####Recap: Input linecards
+- Main challenge is processing speeds
+- Task involved:
+	- Update packet header (easy)
+	- LPM lookup on destination address (harder)
+- Mostly implemented with specialized hardware
+
+####Output Linecard
+- Packet classification: map each packet to a "flow"
+	- Flow (for now): set of packets between two particular endpoints
+- Buffer management: decide when and which packet to drop
+- Scheduler: decide when and which packet to transmit
+- Used to implement various forms of policy
+	- Deny all e-mail traffic from ISP-X to Y (access control)
+	- Route IP telephony traffic from X to Y via PHY_CIRCUIT (policy)
+	- Ensure that no more than 50 Mbps are injected from ISP-X (QoS)
+
+####Scheduling
+- Goal: run links at full capacity, fairness across inputs
+- Scheduling formulated as finding a matching on a bipartite graph
+- Practical solutions look for a good **maximal** matching (fast)
+
+####IP Routers Recap
+- Core building block of Internet
+- Scalable addressing -> Longest Prefix Matching
+- Need fast implementations for:
+	- Longest prefix matching
+	- Switch fabric scheduling
+
+----
+
+####Transport Layer
+- Layer at end-hosts, between the application and network layer
+- Why a transport layer?
+	- Demultiplex packets between many applications
+	- Additional services on top of IP
+
+#####Demultiplexing
+- IP packets are addressed to a host but end-to-end communication is between application processes at hosts
+	- Need a way to decide which packets go to which applications (multiplexing/demultiplexing)
+
+#####Improved service model
+- IP provides a weak service model (best-effort)
+	- Packet can be corrupted, delayed, dropped, reordered, duplicated
+	- No guidance on how much traffic to send and when
+	- Dealing with this is tedious for application developers
+
+####Role of the Transport Layer
+- Communication between processes
+- Provide common end-to-end services for app layer [optional]
+- TCP and UDP are the common transport protocols
+- UDP is a minimalist, no-frills transport protocol
+- TCP is the whole-hog protocol
+	- offers apps a reliable, in-order, bytestream abstraction
+	- with congestion control
+	- but no performance guarantees (delay, bw, etc.)
+
+---
+
+####Summary
+- IP Routers
+	- $$$
+	- Line cards receive packets, change headers
+	- LPM for scalable addressing
+	- Fast hardware needed for LPM, fabric scheduling
+- Transport Layer
+	- Demultiplexes between applications on same host
+	- 2 protocols:
+		- UDP: minimal protocol
+		- TCP: reliable, in order byte stream (more next week!)

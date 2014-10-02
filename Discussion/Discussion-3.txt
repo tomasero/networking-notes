@@ -1,0 +1,41 @@
+###Discussion 3
+
+####BGP
+- Protocol for inter-domain routing
+- Designed for policy and privacy
+- Why not distance-vector?
+	- Shortest path may not be policy compliant
+	- and policies vary across domains
+- Why not link-state?
+	- Everybody knows everything - privacy goes for a toss
+- **Enter Path Vector**
+
+####Realtionships
+- Provider -> Customer
+- Peer <-> Peer
+
+#####It's all about the money!
+- Customer pays provider
+- Peers don't pay each other
+	- Assume equal flow both ways
+- Routing policies try to minimize payment
+
+#####Typical Export Policy
+Destination prefix advertised by | Export route to
+--- | ---
+Customer | Everyone (providers, peers, other customers)
+Peer | Customers
+Provider | Customers
+
+	We'll refer to these as the "Gao-Rexford" rules (capture common -- but not required! - practice!)
+
+####Gao-Rexford
+- With Gao-Rexford, the AS policy graph is a DAG and routes are "valley free"
+
+####Packets flow where money flows
+- Route Selection
+	- Preference order: Customer > Peer > Provider
+- Route Export Policy
+	- Peers provide transit between their customers
+	- Peers do not provide transit to each other
+

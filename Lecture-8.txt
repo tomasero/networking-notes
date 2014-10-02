@@ -1,0 +1,86 @@
+###Lecture 8
+
+####Designing the IP Header
+- Think of the IP as an interface
+	- between the source and destination end-systems
+	- between the source and network (routers)
+- Designing an interface
+	- what task(s) are we trying to accomplish
+	- what information is needed to do it?
+- Header reflects information needed for basic tasks
+
+####What information do we need?
+- Parse packet
+	- IP version number (4 bits), packet length (16 bits)
+- Carry packet to the destination
+	- Destination's IP address (32 bits)
+- Deal with problems along the way
+	- loops: TTL (8 bits)
+	- corruption: checksum (16 bits)
+	- packet too large: fragmentation fields (32 bits)
+- Accomodate evolution
+	- version number (4 bits) (+ fields for special handling)
+- Specify any special handling
+	- ToS (8 bits)
+	- Options (variable length)
+
+#####Preventing Loops (TTL)
+- Forwarding loops cause packets to cycle for a long time
+	- Left unchecked would accumulate to consume all capacity
+- Time-to-Live (TTL) Field (8 bits)
+	- decremented at each hop, packet discarded if reaches 0
+	- ...and "time exceeded" message is sent to the source
+
+#####Header Corruption (Checksum)
+- Checksum (16 bits)
+	- Particular form of checksum **over packet header**
+- If not correct, router discards packets
+	- So it doesn't act on bogus information
+- Checksum recalculated at every router
+	- Why?
+	- Why only header?
+
+#####Fragmentation
+- Every link has a "Maximum Transmission Unit" (MTU)
+	- largest number of bits it can carry as one unit
+- A router can split a packet into multiple "fragments" if the packet size exceeds the link's MTU
+- Must reassemble to recover original packet
+
+#####Special handling
+- "Type of Service" (8 bits)
+	- also called "Differentiated Services Code Point (DSCP)"
+	- allow packets to be treated differently based on needs
+		- e.g., indicate priority, congestion notification
+	- has been redefined several times
+
+#####Options
+- Optional directives to the network
+	- not used very often
+	- 16 bits of metadata + option-specific data
+- Examples of options
+	- Record Route
+	- Strict Source Route
+	- Loose Source Route
+	- Timestamp
+
+---
+
+####Parse packet
+- Header length (4 bits)
+	- Number of 32-bit words in the header
+	- Typically "5" (for a 20-byte IPv4 header)
+	- Can be more when IP options are used
+
+####What are these tasks? (at the destination end-system)
+- Tell destination what to do with the received packet
+	- Transport layer protocol (8 bits)
+- Get responses to the packet back to the source
+	- Source IP address (32 bits)
+
+#####Telling End-Host how to handle packet
+- Protocol (8 bits)
+	- identifies the higher-level protocol
+	- important for **de-multiplexing** at receiving host
+- Most common examples
+	- E.g., "6" for the Transmission Control Protocol (TCP)
+	- E.g., "17" for the User Datagram Protocol (UDP)
